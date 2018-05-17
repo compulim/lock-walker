@@ -14,15 +14,26 @@ const ROOT_CSS = css({
   '& > .arrow': {
     ...Fonts.monospace,
 
+    backgroundColor: 'Transparent',
+    border: 0,
     color: 'Red',
+    fontSize: 16,
+    height: 20,
+    outline: 0,
     paddingLeft: '.5em',
     paddingRight: '.5em'
+  },
+
+  '& > button.arrow': {
+    cursor: 'pointer'
   },
 
   '& > .name': {
     ...Fonts.monospace,
 
     alignSelf: 'flex-start',
+    display: 'flex',
+    flexDirection: 'row-reverse',
 
     '& > button': {
       backgroundColor: 'Transparent',
@@ -31,12 +42,9 @@ const ROOT_CSS = css({
       cursor: 'pointer',
       fontFamily: 'inherit',
       fontSize: 16,
+      height: 20,
       outline: 0,
       padding: 0,
-
-      '&.name': {
-        float: 'left'
-      },
 
       '&.version:hover + .name': {
         textDecoration: 'underline'
@@ -53,6 +61,11 @@ const ROOT_CSS = css({
 
     '&.filter-out:not(.match-subtree)': {
       color: '#CCC'
+    },
+
+    '&.requires > button': {
+      fontSize: 12,
+      fontStyle: 'italic'
     }
   },
 
@@ -71,57 +84,95 @@ function flatten(dependencies) {
   return Object.keys(dependencies).reduce((flattened, name) => [...flattened, name, flatten(dependencies[name])], []);
 }
 
-const Dependency = ({ dependencies, filter, hideOthers, name, onClick }) => {
-  const packageName = name.split('@').slice(0, -1).join('@');
-  const packageVersion = name.split('@').slice(-1)[0];
-  const matchSubtree = filter && flatten(dependencies).some(dependency => match(dependency, filter));
-  const filterIn = filter && match(name, filter);
-  const filterOut = filter && !match(name, filter);
+class Dependency extends React.Component {
+  constructor(props, context) {
+    super(props, context);
 
-  if (hideOthers && filter && !filterIn && !matchSubtree) {
-    return false;
+    this.state = { forceShowOthers: false };
   }
 
-  return (
-    <li className={ ROOT_CSS }>
-      <nobr className={ classNames(['name'], filter ? { 'filter-in': filterIn, 'match-subtree': matchSubtree, 'filter-out': filterOut } : {}) }>
-        <button
-          className="version"
-          onClick={ onClick && onClick.bind(null, name) }
-          type="button"
+  handleArrowClick = () => {
+    this.setState(state => ({ forceShowOthers: !state.forceShowOthers }));
+  }
+
+  render() {
+    const { props, state } = this;
+    const { dependencies, filter, hideOthers, name, onClick, parent } = props;
+    const packageName = name.split('@').slice(0, -1).join('@');
+    const packageVersion = name.split('@').slice(-1)[0];
+    const matchSubtree = filter && flatten(dependencies).some(dependency => match(dependency, filter));
+    const filterIn = filter && match(name, filter);
+    const filterOut = filter && !match(name, filter);
+    const requires = dependencies === true;
+
+    if (hideOthers && filter && !filterIn && !matchSubtree) {
+      return false;
+    }
+
+    return (
+      <li className={ ROOT_CSS }>
+        <nobr
+          className={ classNames(
+            'name',
+            filter ? {
+              'filter-in': filterIn,
+              'filter-out': filterOut,
+              'match-subtree': matchSubtree,
+            } : {},
+            { requires }
+          ) }
+          title={ requires ? `${ name } is loaded by an ascendant of ${ parent }` : '' }
         >
-          @{ packageVersion }
-        </button>
-        <button
-          className="name"
-          onClick={ onClick && onClick.bind(null, packageName) }
-          type="button"
-        >
-          { packageName }
-        </button>
-      </nobr>
-      {
-        !!Object.keys(dependencies).length &&
-          <React.Fragment>
-            <nobr className="arrow">--&gt;</nobr>
-            <ul className="dependencies">
+          <button
+            className="version"
+            onClick={ onClick && onClick.bind(null, name) }
+            type="button"
+          >
+            @{ packageVersion }
+          </button>
+          <button
+            className="name"
+            onClick={ onClick && onClick.bind(null, packageName) }
+            type="button"
+          >
+            { packageName }
+          </button>
+        </nobr>
+        {
+          !!Object.keys(dependencies).length &&
+            <React.Fragment>
               {
-                Object.keys(dependencies).map(name =>
-                  <Dependency
-                    dependencies={ dependencies[name] }
-                    filter={ filter }
-                    hideOthers={ hideOthers }
-                    key={ name }
-                    name={ name }
-                    onClick={ onClick }
-                  />
-                )
+                (filter && hideOthers) ?
+                  <button
+                    className="arrow"
+                    onClick={ this.handleArrowClick }
+                    title="Show hiddens"
+                  >
+                    --&gt;
+                  </button>
+                :
+                  <span className="arrow">--&gt;</span>
               }
-            </ul>
-          </React.Fragment>
-      }
-    </li>
-  );
+              <ul className="dependencies">
+                {
+                  Object.keys(dependencies).map(dependency =>
+                    <Dependency
+                      dependencies={ dependencies[dependency] }
+                      filter={ filter }
+                      hideOthers={ !state.forceShowOthers && hideOthers }
+                      key={ dependency }
+                      name={ dependency }
+                      onClick={ onClick }
+                      parent={ name }
+                    />
+                  )
+                }
+              </ul>
+            </React.Fragment>
+        }
+      </li>
+    );
+  }
 }
 
 export default Dependency;

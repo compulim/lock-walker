@@ -3,7 +3,6 @@ import React from 'react';
 
 import Dependency from './Dependency';
 
-import fontFamily from '../util/fontFamily';
 import mapMap from '../util/mapMap';
 import mapToArray from '../util/mapToArray';
 

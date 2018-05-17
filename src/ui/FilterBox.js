@@ -80,7 +80,7 @@ export default class FilterBox extends React.Component {
 
   render() {
     const { props, state } = this;
-    const { hideOthers, onFilterChange, onHideOthersChange } = props;
+    const { hideOthers, onHideOthersChange } = props;
     const { value } = state;
 
     return (
