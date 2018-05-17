@@ -18,14 +18,9 @@ function walk(dependencies) {
 }
 
 export default connect(
-  ({ packageJSON }, ownProps) => {
-    const allDependencies = mapToArray(mapMap(packageJSON.dependencies, ({ version }, name) => `${ name }@${ version }`)).sort();
-
-    return {
-      allDependencies,
-      dependencies: walk(packageJSON.dependencies)
-    };
-  },
+  ({ packageJSON }, ownProps) => ({
+    dependencies: walk(packageJSON.dependencies)
+  }),
   (dispatch, ownProps) => ({
   })
 )(props =>
