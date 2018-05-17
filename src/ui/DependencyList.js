@@ -10,14 +10,10 @@ import mapToArray from '../util/mapToArray';
 const ROOT_CSS = css({
   listStyleType: 'none',
   margin: 0,
-  padding: 0,
-
-  '> li': {
-    fontFamily: fontFamily('Consolas', 'Courier New', 'monospace')
-  }
+  padding: 0
 });
 
-export default ({ dependencies, filter }) =>
+export default ({ dependencies, filter, onClick }) =>
   <ul className={ ROOT_CSS }>
     {
       mapToArray(mapMap(dependencies || {}, (dependencies, name) =>
@@ -26,6 +22,7 @@ export default ({ dependencies, filter }) =>
             dependencies={ dependencies }
             filter={ filter }
             name={ name }
+            onClick={ onClick }
           />
         </li>
       ))

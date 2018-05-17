@@ -38,6 +38,9 @@ export default connect(
     handleFilterChange: ({ target: { value } }) => {
       // TODO: Add debounce
       dispatch(FilterActions.set(value));
+    },
+    handleDependencyClick: pattern => {
+      dispatch(FilterActions.set(pattern));
     }
   })
 )(props =>
@@ -51,6 +54,7 @@ export default connect(
     <DependencyList
       dependencies={ props.dependencies }
       filter={ props.filter }
+      onClick={ props.handleDependencyClick }
     />
   </div>
 )
