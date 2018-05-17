@@ -15,10 +15,15 @@ const ROOT_CSS = css({
 });
 
 function walk(dependencies) {
-  return mapMap(dependencies, ({ dependencies, version }, name, context) => {
+  return mapMap(dependencies, ({ dependencies, requires, version }, name, context) => {
     context.key(`${ name }@${ version }`);
 
     return {
+      ...requires && mapMap(requires, (version, name, { key }) => {
+        key(`${ name }@${ requires[name] }`);
+
+        return true;
+      }),
       ...dependencies && walk(dependencies),
     };
   });

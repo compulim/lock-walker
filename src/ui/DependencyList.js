@@ -13,22 +13,25 @@ const ROOT_CSS = css({
   paddingBottom: 10,
   paddingLeft: 0,
   paddingRight: 0,
-  paddingTop: 0
+  paddingTop: 0,
+
+  '& > li': {
+    paddingBottom: '.8em'
+  }
 });
 
 export default ({ dependencies, filter, hideOthers, onClick }) =>
   <ul className={ ROOT_CSS }>
     {
       mapToArray(mapMap(dependencies || {}, (dependencies, name) =>
-        <li key={ name }>
-          <Dependency
-            dependencies={ dependencies }
-            filter={ filter }
-            hideOthers={ hideOthers }
-            name={ name }
-            onClick={ onClick }
-          />
-        </li>
+        <Dependency
+          dependencies={ dependencies }
+          filter={ filter }
+          hideOthers={ hideOthers }
+          key={ name }
+          name={ name }
+          onClick={ onClick }
+        />
       ))
     }
   </ul>
