@@ -17,12 +17,16 @@ const ROOT_CSS = css({
   }
 });
 
-export default props =>
+export default ({ dependencies, filter }) =>
   <ul className={ ROOT_CSS }>
     {
-      mapToArray(mapMap(props.dependencies || {}, (dependencies, name) =>
+      mapToArray(mapMap(dependencies || {}, (dependencies, name) =>
         <li key={ name }>
-          <Dependency dependencies={ dependencies } name={ name } />
+          <Dependency
+            dependencies={ dependencies }
+            filter={ filter }
+            name={ name }
+          />
         </li>
       ))
     }
