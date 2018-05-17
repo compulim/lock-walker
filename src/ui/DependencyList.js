@@ -1,7 +1,11 @@
 import { css } from 'glamor';
 import React from 'react';
 
+import Dependency from './Dependency';
+
 import fontFamily from '../util/fontFamily';
+import mapMap from '../util/mapMap';
+import mapToArray from '../util/mapToArray';
 
 const ROOT_CSS = css({
   listStyleType: 'none',
@@ -16,8 +20,10 @@ const ROOT_CSS = css({
 export default props =>
   <ul className={ ROOT_CSS }>
     {
-      (props.dependencies || []).map(dependency =>
-        <li key={ dependency }>{ dependency }</li>
-      )
+      mapToArray(mapMap(props.dependencies || {}, (dependencies, name) =>
+        <li key={ name }>
+          <Dependency dependencies={ dependencies } name={ name } />
+        </li>
+      ))
     }
   </ul>
