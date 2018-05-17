@@ -3,20 +3,15 @@ import { css } from 'glamor';
 import React from 'react';
 
 import DependencyList from './DependencyList';
-import * as FilterActions from '../data/action/filter';
+import FilterBox from './FilterBox';
 
+import * as FilterActions from '../data/action/filter';
 import mapMap from '../util/mapMap';
 
 const ROOT_CSS = css({
   display: 'flex',
   flex: 1,
-  flexDirection: 'column',
-
-  '& > input': {
-    fontSize: 20,
-    marginBottom: 10,
-    padding: 10
-  }
+  flexDirection: 'column'
 });
 
 function walk(dependencies) {
@@ -45,10 +40,8 @@ export default connect(
   })
 )(props =>
   <div className={ ROOT_CSS }>
-    <input
-      autoFocus={ true }
+    <FilterBox
       onChange={ props.handleFilterChange }
-      placeholder="filter"
       value={ props.filter }
     />
     <DependencyList
