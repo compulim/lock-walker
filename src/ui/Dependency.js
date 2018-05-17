@@ -34,8 +34,16 @@ const ROOT_CSS = css({
       outline: 0,
       padding: 0,
 
+      '&.name': {
+        float: 'left'
+      },
+
+      '&.version:hover + .name': {
+        textDecoration: 'underline'
+      },
+
       '&:hover': {
-        color: 'Black'
+        textDecoration: 'underline'
       }
     },
 
@@ -78,16 +86,18 @@ const Dependency = ({ dependencies, filter, hideOthers, name, onClick }) => {
     <li className={ ROOT_CSS }>
       <nobr className={ classNames(['name'], filter ? { 'filter-in': filterIn, 'match-subtree': matchSubtree, 'filter-out': filterOut } : {}) }>
         <button
-          onClick={ onClick && onClick.bind(null, packageName) }
-          type="button"
-        >
-          { packageName }
-        </button>
-        <button
+          className="version"
           onClick={ onClick && onClick.bind(null, name) }
           type="button"
         >
           @{ packageVersion }
+        </button>
+        <button
+          className="name"
+          onClick={ onClick && onClick.bind(null, packageName) }
+          type="button"
+        >
+          { packageName }
         </button>
       </nobr>
       {
