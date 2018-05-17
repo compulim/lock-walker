@@ -17,10 +17,15 @@ const ROOT_CSS = css({
     '& > input': {
       ...Fonts.monospace,
 
+      // backgroundColor: 'rgba(255, 255, 255, .8)',
+      borderColor: '#CCC',
+      borderStyle: 'solid',
+      borderWidth: 1,
       flex: 1,
       fontSize: 20,
       height: 20,
       margin: 10,
+      outline: 0,
       padding: 10
     }
   }
