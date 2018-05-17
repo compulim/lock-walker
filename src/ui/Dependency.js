@@ -76,7 +76,7 @@ const Dependency = ({ dependencies, filter, hideOthers, name, onClick }) => {
 
   return (
     <div className={ ROOT_CSS }>
-      <span className={ classNames(['name'], filter ? { 'filter-in': filterIn, 'match-subtree': matchSubtree, 'filter-out': filterOut } : {}) }>
+      <nobr className={ classNames(['name'], filter ? { 'filter-in': filterIn, 'match-subtree': matchSubtree, 'filter-out': filterOut } : {}) }>
         <button
           onClick={ onClick && onClick.bind(null, packageName) }
           type="button"
@@ -90,11 +90,11 @@ const Dependency = ({ dependencies, filter, hideOthers, name, onClick }) => {
         >
           { packageVersion }
         </button>
-      </span>
+      </nobr>
       {
         !!Object.keys(dependencies).length &&
           <React.Fragment>
-            <div className="arrow">--&gt;</div>
+            <nobr className="arrow">--&gt;</nobr>
             <ul className="dependencies">
               {
                 Object.keys(dependencies).map(name =>

@@ -34,9 +34,9 @@ export default connect(
     handleDependencyClick: pattern => {
       dispatch(FilterActions.setFilter(pattern));
     },
-    handleFilterChange: ({ target: { value } }) => {
+    handleFilterChange: nextValue => {
       // TODO: Add debounce
-      dispatch(FilterActions.setFilter(value));
+      dispatch(FilterActions.setFilter(nextValue));
     },
     handleHideOthersChange: ({ target: { checked } }) => {
       dispatch(FilterActions.setHideOthers(checked));
