@@ -13,6 +13,10 @@ css.global('html', {
   height: '100%'
 });
 
+css.global('body', {
+  margin: 10
+});
+
 css.global('body, #root', {
   display: 'flex',
   flex: 1
