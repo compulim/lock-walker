@@ -18,18 +18,6 @@ function walk(dependencies) {
   return mapMap(dependencies, ({ dependencies, requires, version }, name, context) => {
     context.key(`${ name }@${ version }`);
 
-    if (name === 'fsevents') {
-      console.log(name);
-      console.log({
-        ...requires && mapMap(requires, (version, name, { key }) => {
-          key(`${ name }@${ requires[name] }`);
-
-          return true;
-        }),
-        ...dependencies && walk(dependencies),
-      });
-    }
-
     return {
       ...requires && mapMap(requires, (version, name, { key }) => {
         key(`${ name }@${ requires[name] }`);
