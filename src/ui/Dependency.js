@@ -2,22 +2,27 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
-import fontFamily from '../util/fontFamily';
+import * as Colors from './styles/colors';
+import * as Fonts from './styles/fonts';
 
 const ROOT_CSS = css({
+  ...Colors.primaryText,
+
   display: 'flex',
   flex: 1,
 
   '& > .arrow': {
+    ...Fonts.monospace,
+
     color: 'Red',
-    fontFamily: fontFamily('Consolas', 'Courier New', 'monospace'),
     paddingLeft: '.5em',
     paddingRight: '.5em'
   },
 
   '& > .name': {
+    ...Fonts.monospace,
+
     alignSelf: 'flex-start',
-    fontFamily: fontFamily('Consolas', 'Courier New', 'monospace'),
 
     '& > button': {
       backgroundColor: 'Transparent',
@@ -38,7 +43,7 @@ const ROOT_CSS = css({
       backgroundColor: 'Yellow'
     },
 
-    '&.filter-out': {
+    '&.filter-out:not(.match-subtree)': {
       color: '#CCC'
     }
   },
@@ -50,15 +55,28 @@ const ROOT_CSS = css({
   }
 });
 
-const Dependency = ({ dependencies, filter, name, onClick }) => {
-  const filterIn = filter && ~name.indexOf(filter);
-  const filterOut = filter && !~name.indexOf(filter);
+function match(dependency, pattern) {
+  return !!~dependency.indexOf(pattern);
+}
+
+function flatten(dependencies) {
+  return Object.keys(dependencies).reduce((flattened, name) => [...flattened, name, flatten(dependencies[name])], []);
+}
+
+const Dependency = ({ dependencies, filter, hideOthers, name, onClick }) => {
   const packageName = name.split('@').slice(0, -1).join('@');
   const packageVersion = name.split('@').slice(-1)[0];
+  const matchSubtree = filter && flatten(dependencies).some(dependency => match(dependency, filter));
+  const filterIn = filter && match(name, filter);
+  const filterOut = filter && !match(name, filter);
+
+  if (hideOthers && filter && !filterIn && !matchSubtree) {
+    return false;
+  }
 
   return (
     <div className={ ROOT_CSS }>
-      <span className={ classNames(['name'], { 'filter-in': filterIn, 'filter-out': filterOut }) }>
+      <span className={ classNames(['name'], filter ? { 'filter-in': filterIn, 'match-subtree': matchSubtree, 'filter-out': filterOut } : {}) }>
         <button
           onClick={ onClick && onClick.bind(null, packageName) }
           type="button"
@@ -83,6 +101,7 @@ const Dependency = ({ dependencies, filter, name, onClick }) => {
                   <Dependency
                     dependencies={ dependencies[name] }
                     filter={ filter }
+                    hideOthers={ hideOthers }
                     key={ name }
                     name={ name }
                     onClick={ onClick }

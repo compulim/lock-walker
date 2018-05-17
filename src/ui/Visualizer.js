@@ -25,28 +25,35 @@ function walk(dependencies) {
 }
 
 export default connect(
-  ({ filter, packageJSON }, ownProps) => ({
+  ({ filter, hideOthers, packageJSON }, ownProps) => ({
     dependencies: walk(packageJSON.dependencies),
-    filter
+    filter,
+    hideOthers
   }),
   (dispatch, ownProps) => ({
+    handleDependencyClick: pattern => {
+      dispatch(FilterActions.setFilter(pattern));
+    },
     handleFilterChange: ({ target: { value } }) => {
       // TODO: Add debounce
-      dispatch(FilterActions.set(value));
+      dispatch(FilterActions.setFilter(value));
     },
-    handleDependencyClick: pattern => {
-      dispatch(FilterActions.set(pattern));
+    handleHideOthersChange: ({ target: { checked } }) => {
+      dispatch(FilterActions.setHideOthers(checked));
     }
   })
 )(props =>
   <div className={ ROOT_CSS }>
     <FilterBox
-      onChange={ props.handleFilterChange }
+      hideOthers={ props.hideOthers }
+      onFilterChange={ props.handleFilterChange }
+      onHideOthersChange={ props.handleHideOthersChange }
       value={ props.filter }
     />
     <DependencyList
       dependencies={ props.dependencies }
       filter={ props.filter }
+      hideOthers={ props.hideOthers }
       onClick={ props.handleDependencyClick }
     />
   </div>
