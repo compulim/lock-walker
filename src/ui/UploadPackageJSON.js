@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { css } from 'glamor';
-import React, { Component } from 'react';
+import React from 'react';
 import DropToUpload from 'react-drop-to-upload';
 import onErrorResumeNext from 'on-error-resume-next';
 import { load } from '../data/action/file';

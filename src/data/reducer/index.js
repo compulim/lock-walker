@@ -9,6 +9,8 @@ export default function reducer(state = DEFAULT_STATE, { payload, type }) {
     case FileActions.LOAD:
       state = { ...state, packageJSON: payload };
       break;
+
+    default: break;
   }
 
   return state;

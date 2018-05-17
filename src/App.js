@@ -2,12 +2,14 @@ import { connect } from 'react-redux';
 import { css } from 'glamor';
 import React from 'react';
 
+import fontFamily from './util/fontFamily';
+
 import UploadPackageJSON from './ui/UploadPackageJSON';
 import Visualizer from './ui/Visualizer';
 
 css.global('html', {
   display: 'flex',
-  fontFamily: ['Arial', 'sans-serif'].map(name => `'${ name }'`).join(','),
+  fontFamily: fontFamily('Arial', 'sans-serif'),
   height: '100%'
 });
 
