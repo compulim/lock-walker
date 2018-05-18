@@ -29,17 +29,8 @@ const INSTRUCTIONS_CSS = css({
   },
 
   '& > .notes': {
-    marginTop: '1em',
-
-    '& > button': {
-      background: 'Transparent',
-      borderWidth: 0,
-      color: 'inherit',
-      cursor: 'pointer',
-      fontSize: 'inherit',
-      padding: 0,
-      textDecoration: 'underline'
-    }
+    fontSize: 12,
+    marginTop: '2em'
   }
 });
 
@@ -85,10 +76,12 @@ class UploadPackageJSON extends React.Component {
             :
               <React.Fragment>
                 <div className="upload">
-                  Drop package.json here
+                  Drop your package-lock.json here
                 </div>
                 <div className="notes">
-                  Don't worry, this is pure browser app, we don't send your package-lock.json over the network
+                  <p>Don't worry, this is a pure browser app, we don't send your file over the network.</p>
+                  <p>We do collect anonymous page visit data. It is not derived from any forms and parts of your file.</p>
+                  <p>We respect your privacy.</p>
                 </div>
               </React.Fragment>
           }
