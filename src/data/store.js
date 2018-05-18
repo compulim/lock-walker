@@ -9,7 +9,7 @@ export default function store() {
     initialStore = onErrorResumeNext(() => JSON.parse(window.sessionStorage.getItem('redux')));
   }
 
-  const store = createStore(reducer, initialStore || {});
+  const store = createStore(reducer, initialStore);
 
   if (process.env.NODE_ENV !== 'production') {
     store.subscribe(() => {

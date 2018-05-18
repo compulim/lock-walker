@@ -29,10 +29,8 @@ const ROOT_CSS = css({
 });
 
 export default connect(
-  (state, ownProps) => ({
-    loaded: !!state.packageJSON
-  }),
-  (dispatch, ownProps) => ({
+  ({ packageJSON }, ownProps) => ({
+    loaded: !!packageJSON
   })
 )(props =>
   <div className={ ROOT_CSS }>

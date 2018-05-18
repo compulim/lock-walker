@@ -35,18 +35,21 @@ const ROOT_CSS = css({
     },
 
     '& > .accessory': {
-      alignItems: 'center',
       bottom: -16,
       color: '#333',
-      cursor: 'pointer',
-      display: 'flex',
       fontSize: 12,
       position: 'absolute',
       right: 10,
       userSelect: 'none',
 
-      '& > label:not(:last-child)': {
-        marginRight: '1em'
+      '& > label': {
+        alignItems: 'center',
+        cursor: 'pointer',
+        display: 'flex',
+
+        '&:not(:last-child)': {
+          marginRight: '1em'
+        }
       }
     }
   }

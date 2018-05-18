@@ -50,13 +50,13 @@ export default connect(
       return { requires: false };
     });
 
-    return ({
+    return {
       dependencies: rootDependencies,
       filter,
       hideOthers,
       packages: flatten(packageJSON.dependencies),
       theme
-    });
+    };
   },
   (dispatch, ownProps) => ({
     handleDependencyClick: pattern => {
