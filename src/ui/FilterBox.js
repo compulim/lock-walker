@@ -92,11 +92,12 @@ export default class FilterBox extends React.Component {
               onChange={ this.handleFilterChange }
               onKeyDown={ this.handleKeyDown }
               placeholder="Type keyword here"
-              value={ value }
+              value={ value || '' }
             />
             <label>
               <input
-                checked={ hideOthers }
+                checked={ hideOthers || false }
+                disabled={ !value }
                 onChange={ onHideOthersChange }
                 type="checkbox"
               />
