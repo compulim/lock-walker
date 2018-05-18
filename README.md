@@ -1,4 +1,4 @@
-# package-lock-walker
+# lock-walker
 
 Visualize dependency tree in `package-lock.json` and make it searchable.
 
