@@ -20,12 +20,17 @@ const ROOT_CSS = css({
     fontSize: 16,
     height: 20,
     outline: 0,
-    paddingLeft: '.5em',
-    paddingRight: '.5em'
+    padding: 0
   },
 
   '& > button.arrow': {
     cursor: 'pointer'
+  },
+
+  '& > .circular': {
+    ...Fonts.monospace,
+
+    fontSize: 16
   },
 
   '& > .name': {
@@ -57,7 +62,9 @@ const ROOT_CSS = css({
   },
 
   '&.filter-in > .name': {
-    backgroundColor: 'Yellow'
+    backgroundColor: 'Yellow',
+    paddingLeft: '.3em',
+    paddingRight: '.3em'
   },
 
   '&.filter-out:not(.match-subtree) > .name': {
@@ -163,16 +170,16 @@ class Dependency extends React.Component {
                     onClick={ this.handleArrowClick }
                     title="Show hiddens"
                   >
-                    <nobr>--&gt;</nobr>
+                    <nobr>&nbsp;--&gt;&nbsp;</nobr>
                   </button>
                 :
-                  <nobr className="arrow">--&gt;</nobr>
+                  <nobr className="arrow">&nbsp;--&gt;&nbsp;</nobr>
               }
               {
                 circular ?
-                  <span title="Circular">∞</span>
+                  <span className="circular" title="Circular dependencies">∞</span>
                 : (filter && !matchSubtree && hideOthers && !state.forceShowOthers) ?
-                  <span>&hellip;</span>
+                  <span className="ellipsis">&hellip;</span>
                 :
                   <ul className="dependencies">
                     {

@@ -6,6 +6,7 @@ import DependencyList from './DependencyList';
 import FilterBox from './FilterBox';
 
 import * as FilterActions from '../data/action/filter';
+import * as ThemeActions from '../data/action/theme';
 import mapMap from '../util/mapMap';
 
 const ROOT_CSS = css({
@@ -42,7 +43,7 @@ function flatten(deps = {}) {
 }
 
 export default connect(
-  ({ filter, hideOthers, packageJSON }, ownProps) => {
+  ({ filter, hideOthers, packageJSON, theme }, ownProps) => {
     const rootDependencies = mapMap(packageJSON.dependencies, ({ version }, name, { key }) => {
       key([name, version].join('@'));
 
@@ -51,9 +52,10 @@ export default connect(
 
     return ({
       dependencies: rootDependencies,
-      packages: flatten(packageJSON.dependencies),
       filter,
-      hideOthers
+      hideOthers,
+      packages: flatten(packageJSON.dependencies),
+      theme
     });
   },
   (dispatch, ownProps) => ({
@@ -65,6 +67,9 @@ export default connect(
     },
     handleHideOthersChange: ({ target: { checked } }) => {
       dispatch(FilterActions.setHideOthers(checked));
+    },
+    handleThemeChange: ({ target: { checked } }) => {
+      dispatch(checked ? ThemeActions.darkMode() : ThemeActions.lightMode());
     }
   })
 )(props =>
@@ -73,6 +78,8 @@ export default connect(
       hideOthers={ props.hideOthers }
       onFilterChange={ props.handleFilterChange }
       onHideOthersChange={ props.handleHideOthersChange }
+      onThemeChange={ props.handleThemeChange }
+      theme={ props.theme }
       value={ props.filter }
     />
     <DependencyList

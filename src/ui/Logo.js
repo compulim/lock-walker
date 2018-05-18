@@ -25,5 +25,5 @@ const ROOT_CSS = css({
 
 export default props =>
   <div className={ ROOT_CSS }>
-    package-lock walker by <a href="https://github.com/compulim/">@compulim</a>
+    <a href="https://github.com/compulim/">@compulim</a>/<a href="https://github.com/compulim/lock-walker">lock-walker</a>
   </div>

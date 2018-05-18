@@ -36,12 +36,12 @@ export default connect(
   })
 )(props =>
   <div className={ ROOT_CSS }>
+    <Logo />
     {
       props.loaded ?
         <Visualizer />
       :
         <UploadPackageJSON />
     }
-    <Logo />
   </div>
 );

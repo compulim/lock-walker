@@ -34,16 +34,20 @@ const ROOT_CSS = css({
       padding: 10
     },
 
-    '& > label': {
+    '& > .accessory': {
       alignItems: 'center',
       bottom: -16,
       color: '#333',
       cursor: 'pointer',
       display: 'flex',
-      fontSize: 16,
+      fontSize: 12,
       position: 'absolute',
       right: 10,
-      userSelect: 'none'
+      userSelect: 'none',
+
+      '& > label:not(:last-child)': {
+        marginRight: '1em'
+      }
     }
   }
 });
@@ -98,15 +102,17 @@ export default class FilterBox extends React.Component {
               type="search"
               value={ value || '' }
             />
-            <label>
-              <input
-                checked={ hideOthers || false }
-                disabled={ !value }
-                onChange={ onHideOthersChange }
-                type="checkbox"
-              />
-              Hide others
-            </label>
+            <div className="accessory">
+              <label>
+                <input
+                  checked={ hideOthers || false }
+                  disabled={ !value }
+                  onChange={ onHideOthersChange }
+                  type="checkbox"
+                />
+                Show only search result
+              </label>
+            </div>
           </div>
         </div>
       </React.Fragment>
