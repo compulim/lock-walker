@@ -8,7 +8,7 @@ const ROOT_CSS = css({
 
   backgroundColor: 'rgba(255, 255, 255, .8)',
   bottom: 0,
-  color: '#999',
+  color: '#EEE',
   fontStyle: 'italic',
   padding: 10,
   position: 'fixed',

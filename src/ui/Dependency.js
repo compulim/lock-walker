@@ -109,7 +109,7 @@ class Dependency extends React.Component {
 
   render() {
     const { props, state } = this;
-    const { circular, filter, hideOthers, name, onClick, packages, requires, visited = [] } = props;
+    const { circular, filter, hideOthers, name, onClick, packages, requires, visited = '' } = props;
     const packageName = name.split('@').slice(0, -1).join('@');
     const packageVersion = name.split('@').slice(-1)[0];
     const filterIn = filter && match(name, filter);
@@ -182,11 +182,11 @@ class Dependency extends React.Component {
                           hideOthers={ !state.forceShowOthers && hideOthers }
                           key={ dependency }
                           name={ dependency }
-                          circular={ ~visited.indexOf(dependency) }
+                          circular={ ~visited.split('|').indexOf(dependency) }
                           onClick={ onClick }
                           packages={ packages }
                           requires={ dependencies[dependency].requires }
-                          visited={ [...visited, name] }
+                          visited={ `${ visited }|${ name }` }
                         />
                       )
                     }
