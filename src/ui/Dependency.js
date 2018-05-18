@@ -54,16 +54,18 @@ const ROOT_CSS = css({
         textDecoration: 'underline'
       }
     },
+  },
 
-    '&.filter-in': {
-      backgroundColor: 'Yellow'
-    },
+  '&.filter-in > .name': {
+    backgroundColor: 'Yellow'
+  },
 
-    '&.filter-out:not(.match-subtree)': {
-      color: '#CCC'
-    },
+  '&.filter-out:not(.match-subtree) > .name': {
+    color: '#CCC'
+  },
 
-    '&.requires > button': {
+  '&.requires': {
+    '> .name > button': {
       fontSize: 12,
       fontStyle: 'italic'
     }
@@ -97,7 +99,8 @@ class Dependency extends React.Component {
 
   render() {
     const { props, state } = this;
-    const { dependencies, filter, hideOthers, name, onClick, parent } = props;
+    const { filter, hideOthers, name, onClick, parent, parentDependencies } = props;
+    let { dependencies } = props;
     const packageName = name.split('@').slice(0, -1).join('@');
     const packageVersion = name.split('@').slice(-1)[0];
     const matchSubtree = filter && flatten(dependencies).some(dependency => match(dependency, filter));
@@ -105,22 +108,26 @@ class Dependency extends React.Component {
     const filterOut = filter && !match(name, filter);
     const requires = dependencies === true;
 
+    if (requires) {
+      dependencies = props.parentDependencies.find(parentDependencies => parentDependencies[name] && parentDependencies[name] !== true)[name];
+    }
+
     if (hideOthers && filter && !filterIn && !matchSubtree) {
       return false;
     }
 
     return (
-      <li className={ ROOT_CSS }>
+      <li className={ classNames(
+        ROOT_CSS + '',
+        filter ? {
+          'filter-in': filterIn,
+          'filter-out': filterOut,
+          'match-subtree': matchSubtree,
+        } : {},
+        { requires }
+      ) }>
         <nobr
-          className={ classNames(
-            'name',
-            filter ? {
-              'filter-in': filterIn,
-              'filter-out': filterOut,
-              'match-subtree': matchSubtree,
-            } : {},
-            { requires }
-          ) }
+          className="name"
           title={ requires ? `${ name } is loaded by an ascendant of ${ parent }` : '' }
         >
           <button
@@ -148,24 +155,27 @@ class Dependency extends React.Component {
                     onClick={ this.handleArrowClick }
                     title="Show hiddens"
                   >
-                    --&gt;
+                    <nobr>--&gt;</nobr>
                   </button>
                 :
-                  <span className="arrow">--&gt;</span>
+                  <nobr className="arrow">--&gt;</nobr>
               }
               <ul className="dependencies">
                 {
-                  Object.keys(dependencies).map(dependency =>
-                    <Dependency
-                      dependencies={ dependencies[dependency] }
-                      filter={ filter }
-                      hideOthers={ !state.forceShowOthers && hideOthers }
-                      key={ dependency }
-                      name={ dependency }
-                      onClick={ onClick }
-                      parent={ name }
-                    />
-                  )
+                  Object.keys(dependencies).map(dependency => {
+                    return (
+                      <Dependency
+                        dependencies={ dependencies[dependency] }
+                        filter={ filter }
+                        hideOthers={ !state.forceShowOthers && hideOthers }
+                        key={ dependency }
+                        name={ dependency }
+                        onClick={ onClick }
+                        parent={ name }
+                        parentDependencies={ [...parentDependencies, dependencies] }
+                      />
+                    );
+                  })
                 }
               </ul>
             </React.Fragment>

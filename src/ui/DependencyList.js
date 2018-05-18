@@ -22,14 +22,15 @@ const ROOT_CSS = css({
 export default ({ dependencies, filter, hideOthers, onClick }) =>
   <ul className={ ROOT_CSS }>
     {
-      mapToArray(mapMap(dependencies || {}, (dependencies, name) =>
+      mapToArray(mapMap(dependencies || {}, (subDependencies, name) =>
         <Dependency
-          dependencies={ dependencies }
+          dependencies={ subDependencies }
           filter={ filter }
           hideOthers={ hideOthers }
           key={ name }
           name={ name }
           onClick={ onClick }
+          parentDependencies={ [dependencies] }
         />
       ))
     }
