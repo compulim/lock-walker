@@ -100,7 +100,7 @@ export default class FilterBox extends React.Component {
               autoFocus={ true }
               onChange={ this.handleFilterChange }
               onKeyDown={ this.handleKeyDown }
-              placeholder="Type keyword here"
+              placeholder="try something like &quot;color&quot;"
               spellCheck={ false }
               type="search"
               value={ value || '' }
