@@ -3,9 +3,6 @@ import React from 'react';
 
 import Dependency from './Dependency';
 
-import mapMap from '../util/mapMap';
-import mapToArray from '../util/mapToArray';
-
 const ROOT_CSS = css({
   listStyleType: 'none',
   margin: 0,
@@ -19,19 +16,19 @@ const ROOT_CSS = css({
   }
 });
 
-export default ({ dependencies, filter, hideOthers, onClick }) =>
+export default ({ dependencies, filter, hideOthers, onClick, packages }) =>
   <ul className={ ROOT_CSS }>
     {
-      mapToArray(mapMap(dependencies || {}, (subDependencies, name) =>
+      Object.keys(dependencies).map(name =>
         <Dependency
-          dependencies={ subDependencies }
           filter={ filter }
           hideOthers={ hideOthers }
           key={ name }
           name={ name }
           onClick={ onClick }
-          parentDependencies={ [dependencies] }
+          packages={ packages }
+          requires={ dependencies[name].requires }
         />
-      ))
+      )
     }
   </ul>

@@ -82,8 +82,15 @@ function match(dependency, pattern) {
   return !!~dependency.indexOf(pattern);
 }
 
-function flatten(dependencies) {
-  return Object.keys(dependencies).reduce((flattened, name) => [...flattened, name, flatten(dependencies[name])], []);
+function getAllDependencies(packages, name, visited = []) {
+  const dependencies = [];
+
+  !~visited.indexOf(name) && Object.keys(packages[name].dependencies || {}).forEach(dep => {
+    dependencies.push(dep);
+    dependencies.push(...getAllDependencies(packages, dep, [...visited, name]));
+  });
+
+  return dependencies;
 }
 
 class Dependency extends React.Component {
@@ -99,22 +106,19 @@ class Dependency extends React.Component {
 
   render() {
     const { props, state } = this;
-    const { filter, hideOthers, name, onClick, parent, parentDependencies } = props;
-    let { dependencies } = props;
+    const { circular, filter, hideOthers, name, onClick, packages, requires, visited = [] } = props;
     const packageName = name.split('@').slice(0, -1).join('@');
     const packageVersion = name.split('@').slice(-1)[0];
-    const matchSubtree = filter && flatten(dependencies).some(dependency => match(dependency, filter));
     const filterIn = filter && match(name, filter);
     const filterOut = filter && !match(name, filter);
-    const requires = dependencies === true;
-
-    if (requires) {
-      dependencies = props.parentDependencies.find(parentDependencies => parentDependencies[name] && parentDependencies[name] !== true)[name];
-    }
+    const allDescendants = getAllDependencies(packages, name);
+    const matchSubtree = allDescendants.some(name => match(name, filter));
 
     if (hideOthers && filter && !filterIn && !matchSubtree) {
       return false;
     }
+
+    let dependencies = packages[name].dependencies || {};
 
     return (
       <li className={ classNames(
@@ -128,7 +132,6 @@ class Dependency extends React.Component {
       ) }>
         <nobr
           className="name"
-          title={ requires ? `${ name } is loaded by an ascendant of ${ parent }` : '' }
         >
           <button
             className="version"
@@ -160,24 +163,30 @@ class Dependency extends React.Component {
                 :
                   <nobr className="arrow">--&gt;</nobr>
               }
-              <ul className="dependencies">
-                {
-                  Object.keys(dependencies).map(dependency => {
-                    return (
-                      <Dependency
-                        dependencies={ dependencies[dependency] }
-                        filter={ filter }
-                        hideOthers={ !state.forceShowOthers && hideOthers }
-                        key={ dependency }
-                        name={ dependency }
-                        onClick={ onClick }
-                        parent={ name }
-                        parentDependencies={ [...parentDependencies, dependencies] }
-                      />
-                    );
-                  })
-                }
-              </ul>
+              {
+                circular ?
+                  <span title="Circular">∞</span>
+                : (filter && !matchSubtree && hideOthers && !state.forceShowOthers) ?
+                  <span>&hellip;</span>
+                :
+                  <ul className="dependencies">
+                    {
+                      Object.keys(dependencies).map(dependency =>
+                        <Dependency
+                          filter={ filter }
+                          hideOthers={ !state.forceShowOthers && hideOthers }
+                          key={ dependency }
+                          name={ dependency }
+                          circular={ ~visited.indexOf(dependency) }
+                          onClick={ onClick }
+                          packages={ packages }
+                          requires={ dependencies[dependency].requires }
+                          visited={ [...visited, name] }
+                        />
+                      )
+                    }
+                  </ul>
+              }
             </React.Fragment>
         }
       </li>

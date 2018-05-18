@@ -14,33 +14,53 @@ const ROOT_CSS = css({
   flexDirection: 'column'
 });
 
-function walk(dependencies) {
-  return mapMap(dependencies, ({ dependencies, requires, version }, name, context) => {
-    context.key(`${ name }@${ version }`);
+function flatten(deps = {}) {
+  let flattened = {};
 
-    return {
-      ...requires && mapMap(requires, (version, name, { key }) => {
-        key(`${ name }@${ requires[name] }`);
+  Object.keys(deps).forEach(name => {
+    const { dependencies: subDeps = {}, requires = {}, version } = deps[name];
+    const fullName = [name, version].join('@');
+    const entry = (flattened[fullName] || (flattened[fullName] = {}));
 
-        return true;
-      }),
-      ...dependencies && walk(dependencies),
-    };
+    entry.dependencies || (entry.dependencies = {});
+
+    Object.keys(requires).forEach(subName => {
+      const subFullName = [subName, requires[subName]].join('@');
+
+      entry.dependencies[subFullName] = { requires: !subDeps[subFullName] };
+
+      const subEntry = (flattened[subFullName] || (flattened[subFullName] = {}));
+      const dependents = subEntry.dependents || (subEntry.dependents = []);
+
+      dependents.push(fullName);
+    });
+
+    flattened = { ...flattened, ...flatten(subDeps) };
   });
+
+  return flattened;
 }
 
 export default connect(
-  ({ filter, hideOthers, packageJSON }, ownProps) => ({
-    dependencies: walk(packageJSON.dependencies),
-    filter,
-    hideOthers
-  }),
+  ({ filter, hideOthers, packageJSON }, ownProps) => {
+    const rootDependencies = mapMap(packageJSON.dependencies, ({ version }, name, { key }) => {
+      key([name, version].join('@'));
+
+      return { requires: false };
+    });
+
+    return ({
+      dependencies: rootDependencies,
+      packages: flatten(packageJSON.dependencies),
+      filter,
+      hideOthers
+    });
+  },
   (dispatch, ownProps) => ({
     handleDependencyClick: pattern => {
       dispatch(FilterActions.setFilter(pattern));
     },
     handleFilterChange: nextValue => {
-      // TODO: Add debounce
       dispatch(FilterActions.setFilter(nextValue));
     },
     handleHideOthersChange: ({ target: { checked } }) => {
@@ -57,6 +77,7 @@ export default connect(
     />
     <DependencyList
       dependencies={ props.dependencies }
+      packages={ props.packages }
       filter={ props.filter }
       hideOthers={ props.hideOthers }
       onClick={ props.handleDependencyClick }
