@@ -4,6 +4,7 @@ import React from 'react';
 
 import fontFamily from './util/fontFamily';
 
+import Logo from './ui/Logo';
 import UploadPackageJSON from './ui/UploadPackageJSON';
 import Visualizer from './ui/Visualizer';
 
@@ -41,5 +42,6 @@ export default connect(
       :
         <UploadPackageJSON />
     }
+    <Logo />
   </div>
 );
