@@ -6,11 +6,10 @@ import * as Fonts from './styles/fonts';
 const ROOT_CSS = css({
   ...Fonts.monospace,
 
-  backgroundColor: 'rgba(255, 255, 255, .8)',
   bottom: 0,
   color: '#EEE',
   fontStyle: 'italic',
-  padding: 10,
+  padding: 30,
   position: 'fixed',
   right: 0,
 
