@@ -82,15 +82,18 @@ function match(dependency, pattern) {
   return !!~dependency.indexOf(pattern);
 }
 
-function getAllDependencies(packages, name, visited = []) {
-  const dependencies = [];
+function under(packages, name, predicate, visited = []) {
+  if (~visited.indexOf(name)) {
+    return false;
+  }
 
-  !~visited.indexOf(name) && Object.keys(packages[name].dependencies || {}).forEach(dep => {
-    dependencies.push(dep);
-    dependencies.push(...getAllDependencies(packages, dep, [...visited, name]));
+  return Object.keys(packages[name].dependencies || {}).some(dep => {
+    if (predicate(dep)) {
+      return true;
+    }
+
+    return under(packages, dep, predicate, [...visited, name]);
   });
-
-  return dependencies;
 }
 
 class Dependency extends React.Component {
@@ -111,25 +114,27 @@ class Dependency extends React.Component {
     const packageVersion = name.split('@').slice(-1)[0];
     const filterIn = filter && match(name, filter);
     const filterOut = filter && !match(name, filter);
-    const allDescendants = getAllDependencies(packages, name);
-    const matchSubtree = allDescendants.some(name => match(name, filter));
+    const matchSubtree = under(packages, name, dep => match(dep, filter));
 
     if (hideOthers && filter && !filterIn && !matchSubtree) {
       return false;
     }
 
-    let dependencies = packages[name].dependencies || {};
+    const dependencies = packages[name].dependencies || {};
 
     return (
-      <li className={ classNames(
-        ROOT_CSS + '',
-        filter ? {
-          'filter-in': filterIn,
-          'filter-out': filterOut,
-          'match-subtree': matchSubtree,
-        } : {},
-        { requires }
-      ) }>
+      <li
+        className={ classNames(
+          ROOT_CSS + '',
+          filter ? {
+            'filter-in': filterIn,
+            'filter-out': filterOut,
+            'match-subtree': matchSubtree,
+          } : {},
+          { requires }
+        ) }
+        title={ requires ? `${ name } is a co-located package` : '' }
+      >
         <nobr
           className="name"
         >
