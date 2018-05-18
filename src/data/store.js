@@ -6,14 +6,16 @@ export default function store() {
   const initialStore = onErrorResumeNext(() => JSON.parse(window.sessionStorage.getItem('redux')));
   const store = createStore(reducer, initialStore || {});
 
-  store.subscribe(() => {
-    const state = store.getState();
+  if (process.env.NODE_ENV !== 'production') {
+    store.subscribe(() => {
+      const state = store.getState();
 
-    window.sessionStorage.setItem(
-      'redux',
-      JSON.stringify(state)
-    );
-  });
+      window.sessionStorage.setItem(
+        'redux',
+        JSON.stringify(state)
+      );
+    });
+  }
 
   return store;
 }
