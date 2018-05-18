@@ -20,13 +20,15 @@ const ROOT_CSS = css({
     '& > input': {
       ...Fonts.monospace,
 
+      backdropFilter: 'blur(5px)',
+      backgroundColor: 'rgba(255, 255, 255, .5)',
       borderColor: '#CCC',
       borderStyle: 'solid',
       borderWidth: 1,
       color: '#333',
       flex: 1,
       fontSize: 20,
-      height: 20,
+      height: 40,
       margin: 10,
       outline: 0,
       padding: 10
@@ -92,6 +94,8 @@ export default class FilterBox extends React.Component {
               onChange={ this.handleFilterChange }
               onKeyDown={ this.handleKeyDown }
               placeholder="Type keyword here"
+              spellCheck={ false }
+              type="search"
               value={ value || '' }
             />
             <label>
