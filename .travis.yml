@@ -1,0 +1,19 @@
+language: node_js
+node_js:
+  - "9"
+  - "10"
+before_script:
+  - npm run build
+before_deploy:
+  - git config --local user.name "William Wong"
+  - git config --local user.email "compulim@hotmail.com"
+  - npx version-from-git --travis
+deploy:
+  - provider: pages
+    skip-cleanup: true
+    github-token:
+      secure: "B5Eo3Ho4YodF7sfq4eRuvOPPZge90VfBDUUtRRWd2AI3Ptuzzf3bG9EYrUc6WBs6NAAYevo0+AZCbq2GdOQPQR9l3XudhV54xmj22yLZuNLn4SXJPE4FCYPibG94SCqIRGW/O/drhhXf220aM2s/BDPd6bPUrM19b0d9s7sft4rWr/UN5vV80qEP8ZZD2qHZSTefrUDfa5UPZZsaSWi1nvmNd3zfCRSuWjfZm0lklzIRB9L2UL/EYzJaLtTYpr7AbqcKJJQWbGn+eHu0LlXOMNbV5vCT+Tz0n7TfBS00LNTUgPZqkJv+lAyRrT9UhhDaGZlwSRuXM+UkHEgD8Qlz1Rs6esvVf/CrhYs70cbXFiDYv8kzOzhuVoWnwkjAFxiGzj1k1Emz8thFp1qoEj+vsq92qL4I7OTpvaLir6Vymuq0iGZIJ/RyMvYA48SuZyO5hftdqvNyusqiMPKeP0YhMxZd89dhMlVe+c1dVrzR5C/X/RWkDzpXVPueCMSavRrU9TRoOhfkHElFG64S0LR4U4coIZI1yUPqI9LvwprGzXECKWTjVY3B4fbEZCsLaK9GhwRmuH1GMKoqPviLTzGOfcuuCaokK1uVYhUsKAz+6jCvjpkzH4AqVZCmUCP1BKgADCZjhA8gs+x+uwRik5LIdbdkfHWLKHR1EQ6aZoTdEXk="
+    on:
+      branch: master
+    keep-history: true
+    local-dir: build
