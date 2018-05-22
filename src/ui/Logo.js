@@ -7,7 +7,7 @@ const ROOT_CSS = css({
   ...Fonts.monospace,
 
   bottom: 0,
-  color: '#EEE',
+  color: '#CCC',
   fontStyle: 'italic',
   padding: 30,
   position: 'fixed',

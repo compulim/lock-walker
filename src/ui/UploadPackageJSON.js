@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import { css } from 'glamor';
+import classNames from 'classnames';
 import React from 'react';
 import DropToUpload from 'react-drop-to-upload';
 import onErrorResumeNext from 'on-error-resume-next';
@@ -8,19 +9,29 @@ import { load } from '../data/action/file';
 import * as Fonts from './styles/fonts';
 
 const ROOT_CSS = css({
-  display: 'flex',
+  backgroundImage: 'url(screenshot.gif)',
+  backgroundPosition: '20px 20px',
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: 'cover',
   borderColor: '#CCC',
+  borderRadius: 50,
   borderStyle: 'dashed',
-  borderWidth: 10,
-  borderRadius: 20,
+  borderWidth: 8,
+  display: 'flex',
   flex: 1,
   flexDirection: 'column',
   justifyContent: 'center',
-  textAlign: 'center'
+  textAlign: 'center',
+
+  '&.over': {
+    backgroundColor: '#DFD',
+    backgroundImage: 'none',
+    borderColor: '#3C3'
+  }
 });
 
 const INSTRUCTIONS_CSS = css({
-  color: '#CCC',
+  color: '#666',
 
   '& > .upload': {
     ...Fonts.monospace,
@@ -57,7 +68,7 @@ class UploadPackageJSON extends React.Component {
 
     return (
       <DropToUpload
-        className={ ROOT_CSS + '' }
+        className={ classNames(ROOT_CSS + '', { over: state.over }) }
         onDrop={ props.handleDrop }
         onLeave={ this.handleLeave }
         onOver={ this.handleOver }
